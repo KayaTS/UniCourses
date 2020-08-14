@@ -7850,11 +7850,14 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+<<<<<<< HEAD
         "frameworkReferences": {
           "NETStandard.Library": {
             "privateAssets": "all"
           }
         },
+=======
+>>>>>>> ffab3dafef786b1bbde4ac9cbdc9db68c24c5454
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
       }
     }
