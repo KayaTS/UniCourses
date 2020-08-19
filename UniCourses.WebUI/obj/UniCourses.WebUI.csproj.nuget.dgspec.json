@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj": {}
+    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj": {
+    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj",
+        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj",
         "projectName": "UniCourses.Bl",
-        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj",
+        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj",
         "packagesPath": "C:\\Users\\omerf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\obj\\",
+        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\omerf\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -27,8 +27,8 @@
         "frameworks": {
           "netstandard2.1": {
             "projectReferences": {
-              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
-                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj"
+              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
+                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj"
               }
             }
           }
@@ -61,26 +61,23 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-<<<<<<< HEAD
           "frameworkReferences": {
             "NETStandard.Library": {
               "privateAssets": "all"
             }
           },
-=======
->>>>>>> ffab3dafef786b1bbde4ac9cbdc9db68c24c5454
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
+    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj",
+        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj",
         "projectName": "UniCourses.Dal",
-        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj",
+        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj",
         "packagesPath": "C:\\Users\\omerf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\obj\\",
+        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\omerf\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -146,26 +143,23 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-<<<<<<< HEAD
           "frameworkReferences": {
             "NETStandard.Library": {
               "privateAssets": "all"
             }
           },
-=======
->>>>>>> ffab3dafef786b1bbde4ac9cbdc9db68c24c5454
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj": {
+    "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj",
+        "projectUniqueName": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj",
         "projectName": "UniCourses.WebUI",
-        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj",
+        "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.WebUI\\UniCourses.WebUI.csproj",
         "packagesPath": "C:\\Users\\omerf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.WebUI\\obj\\",
+        "outputPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.WebUI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\omerf\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -181,11 +175,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj": {
-                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj"
+              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj": {
+                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Bl\\UniCourses.Bl.csproj"
               },
-              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
-                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj"
+              "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj": {
+                "projectPath": "C:\\Users\\omerf\\source\\repos\\KayaTS\\UniCourses2\\UniCourses\\UniCourses.Dal\\UniCourses.Dal.csproj"
               }
             }
           }

@@ -34,8 +34,9 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
         Repository<Videos> rVideos;
         IWebHostEnvironment _environment;
         Repository<Image> rImage;
+        Repository<Comment> rComment;
         MyContext myContext;
-        public HomeController(Repository<Videos> _rVideos, Repository<Image> _rImage, IWebHostEnvironment environment, MyContext _myContext, Repository<Category> _rCategory, Repository<Exam> _rExam, Repository<Educator> _rEducator, Repository<Lesson> _rLesson, Repository<Member> _rMember, Repository<Admin> _rAdmin, Repository<Course> _rCourse, Repository<CourseCategoryVM> _rCourCat)
+        public HomeController(Repository<Videos> _rVideos, Repository<Comment> _rComment, Repository<Image> _rImage, IWebHostEnvironment environment, MyContext _myContext, Repository<Category> _rCategory, Repository<Exam> _rExam, Repository<Educator> _rEducator, Repository<Lesson> _rLesson, Repository<Member> _rMember, Repository<Admin> _rAdmin, Repository<Course> _rCourse, Repository<CourseCategoryVM> _rCourCat)
         {
             rCategory = _rCategory;
             rAdmin = _rAdmin;
@@ -48,19 +49,54 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             _environment = environment;
             rVideos = _rVideos;
             myContext = _myContext;
+            rComment = _rComment;
             rImage = _rImage;
         }
         public IActionResult Index()
         {
-            return View();
+            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
+            Educator educator = rEducator.GetBy(x => x.MemberID == Convert.ToInt32(uyeid));
+            List<Course> courses = rCourse.GetAllLazy(x => x.EducatorID == educator.ID, includeProperties: "Lessons").ToList();//kursa lessoncount eklenince lazy loading ile commentler cekilecek.
+            /*List<Comment> comments = new List<Comment>();
+            //rComment.GetAll(x => x.CourseID == 1);
+            foreach (var item in courses)
+            {
+                foreach (var item2 in comments)
+                {
+                    item2.UserComment = rComment.GetBy(x=>x.CourseID== item.Id).UserComment;
+                    item2.MemberName = rComment.GetBy(x=>x.CourseID== item.Id).MemberName;
+                    item2.CommentDate = rComment.GetBy(x=>x.CourseID== item.Id).CommentDate;
+                    item2.Rate = rComment.GetBy(x=>x.CourseID== item.Id).Rate;
+                    rComment.Save();
+                }
+            }*/
+            LessonCoursesVM lessonCoursesVM = new LessonCoursesVM
+            {
+                Educator = educator,
+                Coursess = courses
+            };
+            return View(lessonCoursesVM);
         }
-        public IActionResult Course()
+        public IActionResult Course(int id)
         {
-            return View();
+            List<Course> course = rCourse.GetAllLazy(x => x.Id == id, includeProperties: "Lessons").ToList();
+            return View(course);
         }
-        public IActionResult EditCourse()
+        public IActionResult EditCourse(int id)
         {
-            return View();
+            Course course = rCourse.Bul(id);
+            return View(course);
+        }
+        [HttpPost]
+        public IActionResult EditCourse(Course course)
+        {
+            Course changedcourse = rCourse.Bul(course.Id);
+            changedcourse.Name = course.Name;
+            changedcourse.Price = course.Price;
+            changedcourse.Title = course.Title;
+            changedcourse.Description = course.Description;
+            rCourse.Update(changedcourse);
+            return RedirectToAction("EditCourse", new { course.Id});
         }
         public IActionResult Build()
         {
@@ -72,11 +108,55 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
         }
         public IActionResult CourseList()
         {
-            return View();
+            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
+            Educator educator = rEducator.GetBy(x => x.MemberID == Convert.ToInt32(uyeid));
+            List<Course> courses = rCourse.GetAll(x => x.EducatorID == educator.ID).ToList();
+            return View(courses);
+        }
+        [HttpPost]
+        public IActionResult Profile(Educator educator)
+        {
+            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
+            Educator changededucator = rEducator.Bul(Convert.ToInt32(uyeid));
+
+            changededucator.NameSurname = educator.NameSurname;
+            changededucator.Job = educator.Job;
+            changededucator.University = educator.University;
+            changededucator.Twitter = educator.Twitter;
+            changededucator.Instagram = educator.Instagram;
+            changededucator.Linkedin = educator.Linkedin;
+            changededucator.WebSite = educator.WebSite;
+            rEducator.Update(changededucator);
+            return RedirectToAction("Profile", new { educator.ID });
         }
         public IActionResult Profile()
         {
-            return View();
+            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
+            Educator educator = rEducator.GetBy(x => x.MemberID == Convert.ToInt32(uyeid));
+
+            return View(educator);
+        }
+
+        public IActionResult RemoveCourse(int id)
+        {
+            return View(rCourse.GetBy(x=>x.Id == id));
+        }
+        public IActionResult Sil(int id, string mail, string password)
+        {
+            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
+            Educator educator = rEducator.GetBy(x => x.MemberID == Convert.ToInt32(uyeid));
+            if (mail == educator.Mail && password == educator.Password)
+            {
+                Course course = rCourse.Bul(id);
+                course.State = false;
+                rCourse.Update(course);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("RemoveCourse");
+            }
+            
         }
         [HttpGet]
         public IActionResult CreateCourse()
@@ -110,6 +190,8 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             course.EducatorID = educator.ID;
             course.ImageURL = img.ImageData;
             rCourse.Add(course);
+            rCategory.GetBy(x => x.Id == course.CategoryID).Count++;
+            rCategory.Save();
             img.CourseID = course.Id;
             rImage.Add(img);
             course.ImageID = img.Id;
@@ -153,7 +235,6 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
                         video.UploadDate = DateTime.Now;
                         video.VideoPath = url;
                         rVideos.Add(video);
-                        
                     }
                     
                     var inputFile = new MediaFile { Filename = @"C:\Users\omerf\source\repos\KayaTS\UniCourses\UniCourses.WebUI\wwwroot" + video.VideoPath };
@@ -162,6 +243,8 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
                         engine.GetMetadata(inputFile);
                     }
                     lesson.Duration = (int)inputFile.Metadata.Duration.TotalSeconds;
+                    rCourse.GetBy(x => x.Id == lesson.CourseID).Duration += lesson.Duration;
+                    rCourse.Save();
                     rLesson.Update(lesson);
                     
                 }
@@ -176,15 +259,17 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             }
             return RedirectToAction("Index");
         }
-        public IActionResult UploadVideo()
+        public IActionResult UploadVideo(int id)
         {
-            string uyeid = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Sid).Value;
-            Educator educ = rEducator.GetBy(x => x.MemberID == Convert.ToInt32(uyeid));
-            List<Educator> educator = myContext.Educator.Include(x => x.Courses).ToList();
             
-            List<Course> courses = myContext.Course.Where(x=>x.EducatorID == educ.ID).Include(x => x.Lessons).ToList();
-            //ViewBag.dgr = rLesson.GetAll(x => x. == dersin.).Select(s => new SelectListItem { Text = s.Name, Value = s.Id.ToString() });
-            return View(courses);
+            //ViewBag.Lessonid = rLesson.GetBy(x => x.Id == id);
+            Lesson lesson = rLesson.GetBy(x => x.Id == id);
+            Course course = rCourse.GetBy(x => x.Id == lesson.CourseID);
+            ViewBag.Courseid = course.Id;
+            ViewBag.CourseName = course.Name;
+            ViewBag.LessonName = lesson.LessonName;
+            ViewBag.Lessonid = lesson.Id;
+            return View();
         }
         
         [HttpPost]
@@ -197,8 +282,8 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
                     int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value);
                     string userName = (User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value);
                     string folder = Path.Combine(_environment.WebRootPath, "video");
-                    string url = @"\video\" + userName + @"\" + file.FileName;
-                    string pathString = Path.Combine(folder, userName);
+                    string url = @"\video\" + userName.Replace(" ", "_") + @"\" + file.FileName;
+                    string pathString = Path.Combine(folder, userName.Replace(" ", "_"));
                     if (!Directory.Exists(pathString))
                     {
                         Directory.CreateDirectory(pathString);
@@ -208,12 +293,21 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
                     {
                         await file.CopyToAsync(stream);
                         // rVideos.Add(new Videos(video.Name, DateTime.Now, url, video.LessonID));
-                        video.Name = userName;
+                       
                         video.UploadDate = DateTime.Now;
                         video.VideoPath = url;
                         rVideos.Add(video);
-                        
                     }
+                    var inputFile = new MediaFile { Filename = @"C:\Users\omerf\source\repos\KayaTS\UniCourses\UniCourses.WebUI\wwwroot" + video.VideoPath };
+                    using (var engine = new Engine())
+                    {
+                        engine.GetMetadata(inputFile);
+                    }
+                    Lesson lesson = rLesson.GetBy(x => x.Id == video.LessonID);
+                    lesson.Duration += (int)inputFile.Metadata.Duration.TotalSeconds;
+                    rCourse.GetBy(x => x.Id == lesson.CourseID).Duration += lesson.Duration;
+                    rCourse.Save();
+                    rLesson.Update(lesson);
                 }
                 catch (Exception ex)
                 {
@@ -224,7 +318,7 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             {
                 ViewBag.Message = "You have not specified a file.";
             }
-            return RedirectToAction("UploadVideo");
+            return RedirectToAction("Index");
         }
         public async Task<IActionResult> Cikis()
         {
@@ -232,14 +326,14 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             return Redirect("/");
         }
         [HttpGet]
-        public IActionResult Register(int id)
+        public IActionResult RegisterEducator(int id)
         {
             Member member = rMember.GetBy(x => x.ID == id);
             EducatorMemberVM educatorMemberVM = new EducatorMemberVM { Member = member };
             return View(educatorMemberVM);
         }
         [HttpPost]
-        public IActionResult Register(Educator ed)
+        public IActionResult RegisterEducator(Educator ed)
         {
             rEducator.Add(ed);
             return RedirectToAction("Index");
@@ -249,7 +343,7 @@ namespace UniCourses.WebUI.Areas.Educators.Controllers
             var d = rMember.Bul(id);
             d.RoleNumber = 2;
             rMember.Save();
-            return RedirectToAction("Register", new { id });
+            return RedirectToAction("RegisterEducator", new { id });
         }
 
     }

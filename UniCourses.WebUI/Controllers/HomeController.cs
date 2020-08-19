@@ -34,12 +34,13 @@ namespace UniCourses.WebUI.Controllers
         Repository<Cart> rCart;
         Repository<CourseCategoryVM> rCourCat;
         Repository<Lesson> rLesson;
+        Repository<Picture> rPicture;
         Repository<Videos> rVideos;
         Repository<CourseMember> rCourseMember;
         IWebHostEnvironment _environment;
         MyContext myContext;
 
-        public HomeController(Repository<Videos> _rVideos, Repository<CourseMember> _rCourseMember, IWebHostEnvironment environment, Repository<Admin> _rAdmin, MyContext _myContext, Repository<Lesson> _rLesson, Repository<Cart> _rCart, Repository<Educator> _rEducator, Repository<Category> _rcategory, Repository<Course> _rcourse, Repository<CourseCategoryVM> _rcourcat, Repository<Member> _rmember)
+        public HomeController(Repository<Videos> _rVideos, Repository<Picture> _rPicture, Repository<CourseMember> _rCourseMember, IWebHostEnvironment environment, Repository<Admin> _rAdmin, MyContext _myContext, Repository<Lesson> _rLesson, Repository<Cart> _rCart, Repository<Educator> _rEducator, Repository<Category> _rcategory, Repository<Course> _rcourse, Repository<CourseCategoryVM> _rcourcat, Repository<Member> _rmember)
         {
             rAdmin = _rAdmin;
             rCategory = _rcategory;
@@ -53,7 +54,7 @@ namespace UniCourses.WebUI.Controllers
             _environment = environment;
             rCourseMember = _rCourseMember;
             rVideos = _rVideos;
-
+            rPicture = _rPicture;
 
         }
         public IActionResult Index(string search = null)
@@ -91,7 +92,15 @@ namespace UniCourses.WebUI.Controllers
         public async Task<IActionResult> RegisterAsync(Member m)
         {
             rMember.Add(m);
-
+            Picture img = new Picture();
+                img.ImageTitle = "Member-Default-Picture.png";
+                img.ImageData = "Member-Default-Picture.png";
+            m.PictureURL= "Member-Default-Picture.png";
+            rMember.Save();
+            img.MemberID = m.ID;
+            rPicture.Add(img);
+            m.PictureID = img.Id;
+            rMember.Update(m);
             ClaimsIdentity claimsIdentity = new ClaimsIdentity("UniCourses");
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Sid, m.ID.ToString()));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, m.NameSurName));
@@ -104,6 +113,7 @@ namespace UniCourses.WebUI.Controllers
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal();
             claimsPrincipal.AddIdentity(claimsIdentity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsPrincipal), new AuthenticationProperties() { IsPersistent = true });
+            
             return RedirectToAction("Index", "Home", new { area = "uye" });
         }
 
@@ -213,7 +223,14 @@ namespace UniCourses.WebUI.Controllers
 
              return new ChallengeResult("Google", properties);
          }*/
-
+        public IActionResult UyeGoruntule(int id)
+        {
+            return View(rMember.GetBy(r => r.ID == id));
+        }
+        public IActionResult EgitimciGoruntule(int id)
+        {
+            return View(rEducator.GetBy(r => r.ID == id));
+        }
         public IActionResult AboutUs()
         {
 
@@ -246,12 +263,16 @@ namespace UniCourses.WebUI.Controllers
 
                 foreach (var item in fark)
                 {
-                    courses.Add(rCourse.GetBy(x => x.Id == item));
+                    Course c = rCourse.GetBy(x => x.Id == item && x.State == true);
+                    if (c != null)
+                    {
+                        courses.Add(c);
+                    }
                 }
             }
             else
             {
-                courses = rCourse.GetAll(x => x.CategoryID == id).ToList();
+                courses = rCourse.GetAll(x => x.CategoryID == id && x.State == true).ToList();
             }
             
             Category category = rCategory.GetBy(x => x.Id == id);
@@ -281,11 +302,9 @@ namespace UniCourses.WebUI.Controllers
             };
             return View(courcatVM);
         }
-        [Route("/{catname?}/{courname}/{id}")]
-        public IActionResult CourseSinglePage(int id, string courname)
+        [Route("/Detay/{catname}/{courname}/{id}")]
+        public IActionResult CourseSinglePage(int id)
         {
-            if (courname != "images")
-            {
                 var course = rCourse.GetBy(c => c.Id == id);
                 Cart cart = null;
                 CourseMember courseMember = new CourseMember();
@@ -308,8 +327,6 @@ namespace UniCourses.WebUI.Controllers
                 Image img = myContext.Images.FirstOrDefault(i => i.CourseID == courses.Id);
                 LessonCoursesVM lessonCourses = new LessonCoursesVM { Lessons = lesson, Courses = courses, Educator = educators, Cart = cart, courseMember = courseMember };
                 return View(lessonCourses);
-            }
-            else return View();
         }
 
     }
